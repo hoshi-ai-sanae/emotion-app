@@ -1,0 +1,515 @@
+﻿<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>心の土を整えるアプリ</title>
+  <style>
+    :root {
+      --mint: #cdeee0;
+      --mint-soft: #eaf8f1;
+      --leaf: #dff2c8;
+      --gold: #c9ad63;
+      --ink: #37504a;
+      --card: rgba(255, 255, 255, 0.72);
+      --card-border: rgba(255, 255, 255, 0.92);
+      --shadow: 0 14px 28px rgba(92, 140, 120, 0.16);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: "Hiragino Maru Gothic ProN", "Yu Gothic UI", "Yu Gothic", sans-serif;
+      color: var(--ink);
+      background:
+        radial-gradient(circle at 12% 14%, rgba(255, 255, 255, 0.95) 0 2.2px, transparent 2.2px) 0 0 / 90px 90px,
+        radial-gradient(circle at 82% 25%, rgba(255, 255, 255, 0.75) 0 1.8px, transparent 1.8px) 0 0 / 75px 75px,
+        radial-gradient(circle at 62% 72%, rgba(201, 173, 99, 0.24) 0 1.2px, transparent 1.2px) 0 0 / 110px 110px,
+        linear-gradient(150deg, #f8fff9 0%, var(--mint-soft) 34%, var(--mint) 68%, var(--leaf) 100%);
+      display: grid;
+      place-items: center;
+      padding: 20px 12px;
+    }
+
+    .app {
+      width: min(940px, 100%);
+      border: 1px solid var(--card-border);
+      border-radius: 26px;
+      background: linear-gradient(160deg, rgba(255,255,255,0.72), rgba(255,255,255,0.48));
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      box-shadow: var(--shadow);
+      overflow: hidden;
+    }
+
+    .hero {
+      padding: 30px 20px 20px;
+      text-align: center;
+      background: linear-gradient(130deg, rgba(255,255,255,0.55), rgba(205,238,224,0.6));
+      border-bottom: 1px solid rgba(255,255,255,0.88);
+    }
+
+    .hero-book {
+      width: min(240px, 62vw);
+      height: auto;
+      border-radius: 14px;
+      border: 1px solid rgba(255,255,255,0.95);
+      box-shadow: 0 10px 20px rgba(89, 126, 112, 0.16);
+      margin: 0 auto 14px;
+      display: block;
+      object-fit: cover;
+    }
+
+    .hero-badge {
+      margin: 0 auto 8px;
+      width: fit-content;
+      padding: 6px 12px;
+      font-size: 0.82rem;
+      letter-spacing: 0.02em;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.72);
+      border: 1px solid rgba(255, 255, 255, 0.95);
+      color: #4d7066;
+    }
+
+    h1 {
+      margin: 0;
+      font-size: clamp(1.56rem, 4.8vw, 2.08rem);
+      letter-spacing: 0.03em;
+      color: #385951;
+    }
+
+    .subtitle {
+      margin: 12px auto 0;
+      max-width: 42ch;
+      font-size: 0.96rem;
+      line-height: 1.78;
+      text-align: left;
+      white-space: pre-line;
+    }
+
+    .content {
+      display: grid;
+      gap: 14px;
+      padding: 18px;
+    }
+
+    .card {
+      border-radius: 18px;
+      background: var(--card);
+      border: 1px solid var(--card-border);
+      box-shadow: 0 8px 16px rgba(84, 126, 112, 0.12);
+      padding: 14px;
+    }
+
+    .label {
+      display: block;
+      margin: 0 0 8px;
+      font-size: 0.96rem;
+      font-weight: 700;
+      color: #355a52;
+    }
+
+    .tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .tag-btn {
+      border: 1px solid rgba(255,255,255,0.98);
+      background: rgba(255,255,255,0.82);
+      color: #3f5b55;
+      border-radius: 999px;
+      padding: 8px 12px;
+      font-size: 0.9rem;
+      cursor: pointer;
+      transition: 0.2s ease;
+    }
+
+    .tag-btn:hover {
+      transform: translateY(-1px);
+      background: rgba(255,255,255,0.95);
+    }
+
+    .tag-btn.selected {
+      background: linear-gradient(120deg, #bbe4d0, #e2f4ce);
+      color: #2f4c45;
+      border-color: rgba(255,255,255,1);
+      box-shadow: 0 5px 14px rgba(98, 141, 123, 0.22);
+    }
+
+    textarea {
+      width: 100%;
+      min-height: 130px;
+      border-radius: 14px;
+      border: 1px solid rgba(255,255,255,0.98);
+      background: rgba(255,255,255,0.84);
+      color: #34524b;
+      font-size: 1rem;
+      line-height: 1.6;
+      padding: 12px;
+      resize: vertical;
+      outline: none;
+    }
+
+    textarea:focus {
+      box-shadow: 0 0 0 3px rgba(205, 238, 224, 0.64);
+    }
+
+    .actions {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    button {
+      border: 0;
+      border-radius: 999px;
+      padding: 10px 18px;
+      font-size: 0.95rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: transform 0.18s ease, box-shadow 0.18s ease;
+    }
+
+    .primary {
+      background: linear-gradient(120deg, #bce4d1, #e2f3cc);
+      color: #2f4a44;
+      box-shadow: 0 8px 16px rgba(95, 136, 119, 0.21);
+    }
+
+    .secondary {
+      background: rgba(255,255,255,0.9);
+      color: #41655d;
+      border: 1px solid rgba(255,255,255,1);
+    }
+
+    button:hover {
+      transform: translateY(-1px);
+    }
+
+    .result-title {
+      font-size: 1.05rem;
+      margin: 0 0 8px;
+      color: #3b5f57;
+    }
+
+    .result-text {
+      margin: 0;
+      line-height: 1.75;
+      font-size: 0.96rem;
+      white-space: pre-wrap;
+    }
+
+    .meter-wrap {
+      margin-top: 8px;
+    }
+
+    .meter-track {
+      width: 100%;
+      height: 16px;
+      border-radius: 999px;
+      background: rgba(255,255,255,0.84);
+      overflow: hidden;
+      border: 1px solid rgba(255,255,255,0.98);
+    }
+
+    .meter-bar {
+      height: 100%;
+      width: 0%;
+      border-radius: 999px;
+      background: linear-gradient(90deg, #aeddc6, #d9f0c4, #eedca4);
+      transition: width 0.45s ease;
+    }
+
+    .meter-label {
+      margin-top: 6px;
+      font-size: 0.9rem;
+      color: #416259;
+    }
+
+    .course-title {
+      margin: 0 0 10px;
+      font-size: 1.06rem;
+      color: #3d5f56;
+    }
+
+    .course-text {
+      margin: 0;
+      line-height: 1.8;
+      white-space: pre-line;
+      font-size: 0.95rem;
+    }
+
+    .course-banner {
+      width: 100%;
+      max-width: 640px;
+      height: auto;
+      aspect-ratio: 16 / 6;
+      object-fit: cover;
+      border-radius: 14px;
+      border: 1px solid rgba(255, 255, 255, 0.95);
+      box-shadow: 0 8px 16px rgba(90, 126, 112, 0.14);
+      margin: 12px auto 10px;
+      display: block;
+    }
+
+    .course-line {
+      margin: 0;
+      font-size: 0.95rem;
+      line-height: 1.75;
+      text-align: center;
+      color: #3b5f57;
+    }
+
+    .line-key {
+      color: #658a48;
+      font-weight: 700;
+    }
+
+    .footer-note {
+      text-align: center;
+      font-size: 0.88rem;
+      color: #54736b;
+      padding: 4px 16px 18px;
+    }
+
+    @media (min-width: 820px) {
+      .content {
+        grid-template-columns: 1.1fr 1fr;
+        align-items: start;
+      }
+
+      .full {
+        grid-column: 1 / -1;
+      }
+    }
+
+    @media (max-width: 520px) {
+      .hero-book {
+        width: min(210px, 66vw);
+        margin-bottom: 12px;
+      }
+
+      .course-banner {
+        aspect-ratio: 16 / 7;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main class="app">
+    <header class="hero">
+      <img src="techo-cover.png" alt="願いを叶える1年手帳 種まきの3ヶ月 表紙" class="hero-book">
+      <p class="hero-badge">「願いを叶える1年手帳 種まきの3ヶ月」購入者特典</p>
+      <h1>心の土を整えるアプリ</h1>
+      <p class="subtitle">このアプリは
+「願いを叶える1年手帳 種まきの3ヶ月」を使う方のための小さなワークです
+
+モヤモヤを書き出して
+心の土を整え
+今日まく小さな種を決めていきましょう</p>
+    </header>
+
+    <section class="content">
+      <article class="card full">
+        <label class="label">感情タグを選んでください（複数可）</label>
+        <div id="tagArea" class="tags"></div>
+      </article>
+
+      <article class="card full">
+        <label for="freeText" class="label">今の気持ちを自由に書いてみましょう</label>
+        <textarea id="freeText" placeholder="例）朝から少し焦りがある。気持ちを整えて、今日できる小さな行動を決めたい。"></textarea>
+      </article>
+
+      <article class="card full">
+        <div class="actions">
+          <button id="analyzeBtn" class="primary" type="button">気持ちを整理する</button>
+          <button id="resetBtn" class="secondary" type="button">リセット</button>
+        </div>
+      </article>
+
+      <article class="card">
+        <h2 class="result-title">1 気持ちの整理</h2>
+        <p id="summary" class="result-text">ここに表示されます。</p>
+      </article>
+
+      <article class="card">
+        <h2 class="result-title">2 やさしい受け止めメッセージ</h2>
+        <p id="message" class="result-text">ここに表示されます。</p>
+      </article>
+
+      <article class="card">
+        <h2 class="result-title">3 今日まく種</h2>
+        <p id="nextStep" class="result-text">ここに表示されます。</p>
+      </article>
+
+      <article class="card">
+        <h2 class="result-title">4 感情の圧</h2>
+        <div class="meter-wrap">
+          <div class="meter-track">
+            <div id="pressureBar" class="meter-bar"></div>
+          </div>
+          <div id="pressureLabel" class="meter-label">0 / 100（穏やか）</div>
+        </div>
+      </article>
+
+      <article class="card full">
+        <h2 class="course-title">講座案内</h2>
+        <p class="course-text">このアプリはAIで作りました
+
+こんなアプリが作れるようになる秘密
+知りたいですか？
+
+あなただけのオリジナルAIを作ろう
+無料2days
+
+3/19 3/24
+13:00〜14:00
+
+申込ページ準備中</p>
+        <img src="ai-course-banner.jpg" alt="AI講座バナー" class="course-banner">
+        <p class="course-line">気になる方はLINEで『<span class="line-key">AI</span>』と送ってください</p>
+      </article>
+    </section>
+
+    <p class="footer-note">このナビは体験版です</p>
+  </main>
+
+  <script>
+    const emotions = [
+      "モヤモヤ", "不安", "イライラ", "焦り", "悲しみ",
+      "疲れ", "さみしさ", "怒り", "迷い", "自己否定"
+    ];
+
+    const emotionWeight = {
+      "モヤモヤ": 8,
+      "不安": 12,
+      "イライラ": 14,
+      "焦り": 13,
+      "悲しみ": 12,
+      "疲れ": 10,
+      "さみしさ": 10,
+      "怒り": 16,
+      "迷い": 9,
+      "自己否定": 16
+    };
+
+    const selected = new Set();
+    const tagArea = document.getElementById("tagArea");
+    const freeText = document.getElementById("freeText");
+    const summary = document.getElementById("summary");
+    const message = document.getElementById("message");
+    const nextStep = document.getElementById("nextStep");
+    const pressureBar = document.getElementById("pressureBar");
+    const pressureLabel = document.getElementById("pressureLabel");
+    const analyzeBtn = document.getElementById("analyzeBtn");
+    const resetBtn = document.getElementById("resetBtn");
+
+    function createTags() {
+      emotions.forEach((emotion) => {
+        const btn = document.createElement("button");
+        btn.type = "button";
+        btn.className = "tag-btn";
+        btn.textContent = emotion;
+        btn.addEventListener("click", () => {
+          if (selected.has(emotion)) {
+            selected.delete(emotion);
+            btn.classList.remove("selected");
+          } else {
+            selected.add(emotion);
+            btn.classList.add("selected");
+          }
+        });
+        tagArea.appendChild(btn);
+      });
+    }
+
+    function countTextPressure(text) {
+      if (!text.trim()) return 0;
+      const lengthScore = Math.min(35, Math.floor(text.trim().length / 4));
+      const strongWords = ["つらい", "苦しい", "しんどい", "無理", "不安", "焦る", "怖い", "消えたい"];
+      let keywordScore = 0;
+      strongWords.forEach((word) => {
+        if (text.includes(word)) keywordScore += 7;
+      });
+      return Math.min(45, lengthScore + keywordScore);
+    }
+
+    function getSummary(tags, text) {
+      const tagPart = tags.length
+        ? "今は「" + tags.join("・") + "」が重なっています。心の土を整える時間にしましょう。"
+        : "はっきり名前をつけにくい気持ちが、心の中にふわっと残っている状態です。";
+      const textPart = text.trim()
+        ? "言葉にできている時点で、もう整理は進んでいます。次は今日の種を小さく選べば十分です。"
+        : "今は短い言葉だけでも大丈夫。気づけたこと自体が、最初の種まきです。";
+      return tagPart + "\n" + textPart;
+    }
+
+    function getMessage(tags) {
+      if (tags.includes("自己否定") || tags.includes("悲しみ")) {
+        return "あなたの価値は、今日の出来では変わりません。手帳に一言でも書けたことを、やさしい前進として受け取ってください。";
+      }
+      if (tags.includes("怒り") || tags.includes("イライラ")) {
+        return "怒りやイライラは、大切にしたい想いのサインです。まず呼吸を整えてから、手帳に『守りたいこと』を一つ書いてみましょう。";
+      }
+      if (tags.includes("不安") || tags.includes("焦り")) {
+        return "不安や焦りは、願いに向かう真剣さの証です。手帳の今日の欄に、小さく始める一歩をひとつだけ置いていきましょう。";
+      }
+      return "どんな感情にも意味があります。今ここで気持ちを見つめたあなたは、もう次の種をまく準備ができています。";
+    }
+
+    function getNextStep(tags, pressure) {
+      if (pressure >= 75) {
+        return "まずは90秒、吸う4秒・吐く6秒で呼吸を整えましょう。そのあと手帳に『今日は整える日』と書き、できる最小の種を1つ決めます。";
+      }
+      if (tags.includes("迷い")) {
+        return "手帳に『今日まく種』を3つ書き、一番軽く始められる1つに丸をつけて5分だけ取り組みましょう。";
+      }
+      if (tags.includes("疲れ")) {
+        return "肩と首を30秒ゆるめたら、手帳に『休んでからできる小さな種』を1つ書いて10分だけ動いてみましょう。";
+      }
+      return "手帳の今日のページに『今日まく種』を1つだけ書き、5分タイマーで着手してみましょう。小ささが継続のコツです。";
+    }
+
+    function pressureLevelLabel(value) {
+      if (value < 25) return "穏やか";
+      if (value < 50) return "やや高め";
+      if (value < 75) return "高め";
+      return "かなり高い";
+    }
+
+    analyzeBtn.addEventListener("click", () => {
+      const tags = Array.from(selected);
+      const text = freeText.value;
+      const tagPressure = tags.reduce((sum, tag) => sum + (emotionWeight[tag] || 0), 0);
+      const textPressure = countTextPressure(text);
+      const pressure = Math.min(100, tagPressure + textPressure);
+
+      summary.textContent = getSummary(tags, text);
+      message.textContent = getMessage(tags);
+      nextStep.textContent = getNextStep(tags, pressure);
+      pressureBar.style.width = pressure + "%";
+      pressureLabel.textContent = pressure + " / 100（" + pressureLevelLabel(pressure) + "）";
+    });
+
+    resetBtn.addEventListener("click", () => {
+      selected.clear();
+      document.querySelectorAll(".tag-btn").forEach((btn) => btn.classList.remove("selected"));
+      freeText.value = "";
+      summary.textContent = "ここに表示されます。";
+      message.textContent = "ここに表示されます。";
+      nextStep.textContent = "ここに表示されます。";
+      pressureBar.style.width = "0%";
+      pressureLabel.textContent = "0 / 100（穏やか）";
+    });
+
+    createTags();
+  </script>
+</body>
+</html>
