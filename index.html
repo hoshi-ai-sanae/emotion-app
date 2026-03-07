@@ -1,0 +1,413 @@
+﻿<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>感情浄化アプリ</title>
+  <style>
+    :root {
+      --sakura: #f8cfe0;
+      --milk-tea: #e9d9c7;
+      --lavender: #d6c9f5;
+      --rose: #f19cbc;
+      --ink: #5a4a5f;
+      --card: rgba(255, 255, 255, 0.45);
+      --card-border: rgba(255, 255, 255, 0.6);
+      --shadow: 0 12px 30px rgba(126, 90, 120, 0.18);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: "Hiragino Maru Gothic ProN", "Yu Gothic UI", "Yu Gothic", sans-serif;
+      color: var(--ink);
+      background:
+        radial-gradient(circle at 10% 10%, rgba(255,255,255,0.8) 0 2px, transparent 2px) 0 0 / 80px 80px,
+        radial-gradient(circle at 80% 20%, rgba(255,255,255,0.65) 0 1.5px, transparent 1.5px) 0 0 / 70px 70px,
+        radial-gradient(circle at 40% 70%, rgba(255,255,255,0.45) 0 1px, transparent 1px) 0 0 / 60px 60px,
+        linear-gradient(145deg, var(--sakura), var(--milk-tea) 45%, var(--lavender));
+      display: grid;
+      place-items: center;
+      padding: 20px 12px;
+    }
+
+    .app {
+      width: min(920px, 100%);
+      border: 1px solid var(--card-border);
+      border-radius: 24px;
+      background: linear-gradient(160deg, rgba(255,255,255,0.5), rgba(255,255,255,0.28));
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      box-shadow: var(--shadow);
+      overflow: hidden;
+    }
+
+    .hero {
+      padding: 28px 20px 18px;
+      text-align: center;
+      background: linear-gradient(120deg, rgba(255,255,255,0.25), rgba(241,156,188,0.25));
+      border-bottom: 1px solid rgba(255,255,255,0.5);
+    }
+
+    h1 {
+      margin: 0;
+      font-size: clamp(1.5rem, 4.8vw, 2rem);
+      letter-spacing: 0.03em;
+      color: #6a506f;
+    }
+
+    .subtitle {
+      margin: 10px auto 0;
+      max-width: 42ch;
+      font-size: 0.96rem;
+      line-height: 1.7;
+    }
+
+    .content {
+      display: grid;
+      gap: 14px;
+      padding: 18px;
+    }
+
+    .card {
+      border-radius: 18px;
+      background: var(--card);
+      border: 1px solid var(--card-border);
+      box-shadow: 0 8px 18px rgba(110, 80, 115, 0.12);
+      padding: 14px;
+    }
+
+    .label {
+      display: block;
+      margin: 0 0 8px;
+      font-size: 0.96rem;
+      font-weight: 700;
+    }
+
+    .tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .tag-btn {
+      border: 1px solid rgba(255,255,255,0.9);
+      background: rgba(255,255,255,0.62);
+      color: var(--ink);
+      border-radius: 999px;
+      padding: 8px 12px;
+      font-size: 0.9rem;
+      cursor: pointer;
+      transition: 0.2s ease;
+    }
+
+    .tag-btn:hover {
+      transform: translateY(-1px);
+      background: rgba(255,255,255,0.78);
+    }
+
+    .tag-btn.selected {
+      background: linear-gradient(120deg, rgba(241,156,188,0.8), rgba(214,201,245,0.8));
+      color: #4e3f53;
+      border-color: rgba(255,255,255,1);
+      box-shadow: 0 5px 14px rgba(130, 84, 119, 0.2);
+    }
+
+    textarea {
+      width: 100%;
+      min-height: 130px;
+      border-radius: 14px;
+      border: 1px solid rgba(255,255,255,0.95);
+      background: rgba(255,255,255,0.72);
+      color: #4d3e53;
+      font-size: 1rem;
+      line-height: 1.6;
+      padding: 12px;
+      resize: vertical;
+      outline: none;
+    }
+
+    textarea:focus {
+      box-shadow: 0 0 0 3px rgba(214,201,245,0.45);
+    }
+
+    .actions {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    button {
+      border: 0;
+      border-radius: 999px;
+      padding: 10px 18px;
+      font-size: 0.95rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: transform 0.18s ease, box-shadow 0.18s ease;
+    }
+
+    .primary {
+      background: linear-gradient(120deg, #f4acc7, #d9ccf7);
+      color: #493b50;
+      box-shadow: 0 8px 16px rgba(129, 89, 120, 0.2);
+    }
+
+    .secondary {
+      background: rgba(255,255,255,0.8);
+      color: #614c66;
+      border: 1px solid rgba(255,255,255,1);
+    }
+
+    button:hover {
+      transform: translateY(-1px);
+    }
+
+    .result-title {
+      font-size: 1.05rem;
+      margin: 0 0 8px;
+      color: #694f70;
+    }
+
+    .result-text {
+      margin: 0;
+      line-height: 1.75;
+      font-size: 0.96rem;
+      white-space: pre-wrap;
+    }
+
+    .meter-wrap {
+      margin-top: 8px;
+    }
+
+    .meter-track {
+      width: 100%;
+      height: 16px;
+      border-radius: 999px;
+      background: rgba(255,255,255,0.75);
+      overflow: hidden;
+      border: 1px solid rgba(255,255,255,0.95);
+    }
+
+    .meter-bar {
+      height: 100%;
+      width: 0%;
+      border-radius: 999px;
+      background: linear-gradient(90deg, #f7b9ca, #e3cff9, #c5b4f3);
+      transition: width 0.45s ease;
+    }
+
+    .meter-label {
+      margin-top: 6px;
+      font-size: 0.9rem;
+    }
+
+    .footer-note {
+      text-align: center;
+      font-size: 0.88rem;
+      color: #6e5b73;
+      padding: 4px 16px 18px;
+    }
+
+    @media (min-width: 820px) {
+      .content {
+        grid-template-columns: 1.1fr 1fr;
+        align-items: start;
+      }
+
+      .full {
+        grid-column: 1 / -1;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main class="app">
+    <header class="hero">
+      <h1>感情浄化アプリ</h1>
+      <p class="subtitle">今の気持ちをやさしく見つめ、心を少し軽くするための小さなナビです。</p>
+    </header>
+
+    <section class="content">
+      <article class="card full">
+        <label class="label">感情タグを選んでください（複数可）</label>
+        <div id="tagArea" class="tags"></div>
+      </article>
+
+      <article class="card full">
+        <label for="freeText" class="label">今の気持ちを自由に書いてみましょう</label>
+        <textarea id="freeText" placeholder="例）やることが多くて焦る。うまくできるか不安で胸がざわざわする。"></textarea>
+      </article>
+
+      <article class="card full">
+        <div class="actions">
+          <button id="analyzeBtn" class="primary" type="button">気持ちを整理する</button>
+          <button id="resetBtn" class="secondary" type="button">リセット</button>
+        </div>
+      </article>
+
+      <article class="card">
+        <h2 class="result-title">1 気持ちの整理</h2>
+        <p id="summary" class="result-text">ここに表示されます。</p>
+      </article>
+
+      <article class="card">
+        <h2 class="result-title">2 やさしい受け止めメッセージ</h2>
+        <p id="message" class="result-text">ここに表示されます。</p>
+      </article>
+
+      <article class="card">
+        <h2 class="result-title">3 次の小さな一歩</h2>
+        <p id="nextStep" class="result-text">ここに表示されます。</p>
+      </article>
+
+      <article class="card">
+        <h2 class="result-title">4 感情の圧</h2>
+        <div class="meter-wrap">
+          <div class="meter-track">
+            <div id="pressureBar" class="meter-bar"></div>
+          </div>
+          <div id="pressureLabel" class="meter-label">0 / 100（穏やか）</div>
+        </div>
+      </article>
+    </section>
+
+    <p class="footer-note">このナビは体験版です</p>
+  </main>
+
+  <script>
+    const emotions = [
+      "モヤモヤ", "不安", "イライラ", "焦り", "悲しみ",
+      "疲れ", "さみしさ", "怒り", "迷い", "自己否定"
+    ];
+
+    const emotionWeight = {
+      "モヤモヤ": 8,
+      "不安": 12,
+      "イライラ": 14,
+      "焦り": 13,
+      "悲しみ": 12,
+      "疲れ": 10,
+      "さみしさ": 10,
+      "怒り": 16,
+      "迷い": 9,
+      "自己否定": 16
+    };
+
+    const selected = new Set();
+    const tagArea = document.getElementById("tagArea");
+    const freeText = document.getElementById("freeText");
+    const summary = document.getElementById("summary");
+    const message = document.getElementById("message");
+    const nextStep = document.getElementById("nextStep");
+    const pressureBar = document.getElementById("pressureBar");
+    const pressureLabel = document.getElementById("pressureLabel");
+    const analyzeBtn = document.getElementById("analyzeBtn");
+    const resetBtn = document.getElementById("resetBtn");
+
+    function createTags() {
+      emotions.forEach((emotion) => {
+        const btn = document.createElement("button");
+        btn.type = "button";
+        btn.className = "tag-btn";
+        btn.textContent = emotion;
+        btn.addEventListener("click", () => {
+          if (selected.has(emotion)) {
+            selected.delete(emotion);
+            btn.classList.remove("selected");
+          } else {
+            selected.add(emotion);
+            btn.classList.add("selected");
+          }
+        });
+        tagArea.appendChild(btn);
+      });
+    }
+
+    function countTextPressure(text) {
+      if (!text.trim()) return 0;
+      const lengthScore = Math.min(35, Math.floor(text.trim().length / 4));
+      const strongWords = ["つらい", "苦しい", "しんどい", "無理", "不安", "焦る", "怖い", "消えたい"];
+      let keywordScore = 0;
+      strongWords.forEach((word) => {
+        if (text.includes(word)) keywordScore += 7;
+      });
+      return Math.min(45, lengthScore + keywordScore);
+    }
+
+    function getSummary(tags, text) {
+      const tagPart = tags.length
+        ? "今は「" + tags.join("・") + "」が重なっている状態です。"
+        : "はっきりした名前をつけにくい感情が、心の中に漂っている状態です。";
+      const textPart = text.trim()
+        ? "言葉にできている時点で、気持ちを整理する力はすでにあります。"
+        : "今は短い言葉だけでも十分です。感じていることに気づけているのが第一歩です。";
+      return tagPart + "\n" + textPart;
+    }
+
+    function getMessage(tags) {
+      if (tags.includes("自己否定") || tags.includes("悲しみ")) {
+        return "あなたの価値は、今日の出来や気分で決まりません。今はただ、よくここまで頑張ってきた自分をそっと休ませてあげてください。";
+      }
+      if (tags.includes("怒り") || tags.includes("イライラ")) {
+        return "怒りやイライラは、あなたの大切な境界線を守るサインでもあります。感じた自分を責めず、まずは深呼吸で心拍をゆるめましょう。";
+      }
+      if (tags.includes("不安") || tags.includes("焦り")) {
+        return "不安や焦りがあるのは、あなたが真剣に向き合っている証です。うまくやるより、今の一歩を小さく選べば大丈夫です。";
+      }
+      return "どんな感情にも理由があります。今ここで気持ちを見つめようとしているあなたは、とても誠実でやさしい人です。";
+    }
+
+    function getNextStep(tags, pressure) {
+      if (pressure >= 75) {
+        return "まずは90秒だけ目を閉じて、吸う4秒・吐く6秒で呼吸しましょう。そのあと白湯か水をひと口。今日は『整える』を最優先に。";
+      }
+      if (tags.includes("迷い")) {
+        return "紙に「今できること」を3つだけ書き、一番小さい1つに丸をつけて5分だけ着手してみましょう。";
+      }
+      if (tags.includes("疲れ")) {
+        return "肩と首を30秒ゆるめて、背もたれに寄りかかる休憩を1回。終わったら次の作業を10分だけ。";
+      }
+      return "『次にやることを1つだけ』言葉にして、5分タイマーで始めてみましょう。完璧より着手が正解です。";
+    }
+
+    function pressureLevelLabel(value) {
+      if (value < 25) return "穏やか";
+      if (value < 50) return "やや高め";
+      if (value < 75) return "高め";
+      return "かなり高い";
+    }
+
+    analyzeBtn.addEventListener("click", () => {
+      const tags = Array.from(selected);
+      const text = freeText.value;
+      const tagPressure = tags.reduce((sum, tag) => sum + (emotionWeight[tag] || 0), 0);
+      const textPressure = countTextPressure(text);
+      const pressure = Math.min(100, tagPressure + textPressure);
+
+      summary.textContent = getSummary(tags, text);
+      message.textContent = getMessage(tags);
+      nextStep.textContent = getNextStep(tags, pressure);
+      pressureBar.style.width = pressure + "%";
+      pressureLabel.textContent = pressure + " / 100（" + pressureLevelLabel(pressure) + "）";
+    });
+
+    resetBtn.addEventListener("click", () => {
+      selected.clear();
+      document.querySelectorAll(".tag-btn").forEach((btn) => btn.classList.remove("selected"));
+      freeText.value = "";
+      summary.textContent = "ここに表示されます。";
+      message.textContent = "ここに表示されます。";
+      nextStep.textContent = "ここに表示されます。";
+      pressureBar.style.width = "0%";
+      pressureLabel.textContent = "0 / 100（穏やか）";
+    });
+
+    createTags();
+  </script>
+</body>
+</html>
